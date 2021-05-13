@@ -1,0 +1,8 @@
+Flask
+amqp
+celery
+numpy
+scikit-learn
+future
+pickle5
+matplotlib
