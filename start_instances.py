@@ -1,14 +1,14 @@
-import time, os, sys, random, re
+import time, os, sys,  random
 import inspect
 from os import environ as env
 
-from novaclient import client
+from  novaclient import client
 import keystoneclient.v3.client as ksclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
 
-flavor = "ssc.medium"
-private_net = "UPPMAX/1-3 Internal IPv4 Network"
+flavor = "ssc.medium" 
+private_net = "UPPMAX 2020/1-3 Internal IPv4 Network"
 floating_ip_pool_name = None
 floating_ip = None
 image_name = "Ubuntu 20.04 - 2021.03.23"
@@ -21,15 +21,16 @@ loader = loading.get_plugin_loader('password')
 auth = loader.load_from_options(auth_url=env['OS_AUTH_URL'],
                                 username=env['OS_USERNAME'],
                                 password=env['OS_PASSWORD'],
-                                project_name=env['OS_PASSWORD'],
+                                project_name=env['OS_PROJECT_NAME'],
                                 project_domain_id=env['OS_PROJECT_DOMAIN_ID'],
+                                #project_id=env['OS_PROJECT_ID'],
                                 user_domain_name=env['OS_USER_DOMAIN_NAME'])
 
 sess = session.Session(auth=auth)
-nove = client.Client('2.1', session=sess)
+nova = client.Client('2.1', session=sess)
 print("User authorization completed.")
 
-image = nove.glance.find_image(image_name)
+image = nova.glance.find_image(image_name)
 flavor = nova.flavors.find(name=flavor)
 
 if private_net != None:
@@ -49,14 +50,14 @@ cfg_file_path = os.getcwd() + '/dev-cfg.txt'
 if os.path.isfile(cfg_file_path):
     userdata_dev = open(cfg_file_path)
 else:
-    sts.exit("dev-cfg.txt is not in current working directory")
+    sys.exit("dev-cfg.txt is not in current working directory")
 
 secgroups = ['default']
 
 print('Creating instances ...')
 instance_prod = nova.servers.create(name="team16_prod"+str(identifier),
                                     image=image,
-                                    flavor=falvor,
+                                    flavor=flavor,
                                     key_name=key,
                                     userdata=userdata_prod,
                                     nics=nics,
@@ -64,7 +65,7 @@ instance_prod = nova.servers.create(name="team16_prod"+str(identifier),
 
 instance_dev = nova.servers.create(name="team16_dev"+str(identifier),
                                     image=image,
-                                    flavor=falvor,
+                                    flavor=flavor,
                                     key_name=key,
                                     userdata=userdata_dev,
                                     nics=nics,
@@ -87,7 +88,7 @@ while inst_status_prod == 'BUILD' or inst_status_dev == 'BUILD':
 
 ip_address_prod = None
 for network in instance_prod.networks[private_net]:
-    if.match('\d+\.\d+\.\d+\.\d+', network):
+    if re.match('\d+\.\d+\.\d+\.\d+', network):
         ip_address_prod = network
         break
 if ip_address_prod is None:
@@ -95,7 +96,7 @@ if ip_address_prod is None:
 
 ip_address_dev = None
 for network in instance_dev.networks[private_net]:
-    if.match('\d+\.\d+\.\d+\.\d+', network):
+    if re.match('\d+\.\d+\.\d+\.\d+', network):
         ip_address_dev = network
         break
 if ip_address_dev is None:

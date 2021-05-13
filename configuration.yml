@@ -3,7 +3,7 @@
     - name: Generate hosts file
       lineinfile: dest=/etc/hosts
                   regexp='.*{{ item }}$'
-                  line="{{ hostvars[item].ansible_default_ip4.address }} {{item}}"
+                  line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
                   state=present
       when: hostvars[item].ansible_default_ipv4.address is defined
       with_items: "{{groups['all']}}"
@@ -14,8 +14,8 @@
       become: true
 
     - name: apt update
-      apt: apdate_cache=yes upgrade=dist
-      become=true
+      apt: update_cache=yes upgrade=dist
+      become: true
 
     - name: Download git repository
       become: true
@@ -69,10 +69,10 @@
       apt: pkg=docker-ce state=present update_cache=true allow_unauthenticated=yes
       become: true
 
-    - name: Download docker-compose
+    - name: Download docker-compose 
       become: yes
-      get_url:
-        url: "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-{{ansible_system}}-{{ansible-architecture}}"
+      get_url:        
+        url: "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-{{ansible_system}}-{{ansible_architecture}}"
         dest: /usr/local/bin/docker-compose
         mode: +x
 
@@ -80,13 +80,13 @@
       become: true
       shell: docker build .
       args:
-        chdir: /project/star_pred/prod_server
+        chdir: /star_pred/prod_server
 
-    - name: Running containers:
+    - name: Running containers
       become: true
       shell: docker-compose up -d
       args:
-        chdir: /project/star_pred/prod_server
+        chdir: /star_pred/prod_server
 
 - hosts: devserver
 
