@@ -1,6 +1,6 @@
 # Script that will creat instances just like start-instances. (maybe with ability to specify number of sslaves)
 # You should also input the IP and port for ray
-import time, os, sys,  random
+import time, os, sys,  random, re
 import inspect
 from os import environ as env
 
