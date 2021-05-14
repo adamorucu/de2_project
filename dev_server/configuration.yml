@@ -1,0 +1,52 @@
+- hosts: all
+  tasks:
+    - name: Generate hosts file
+      lineinfile: dest=/etc/hosts
+                  regexp='.*{{ item }}$'
+                  line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
+                  state=present
+      when: hostvars[item].ansible_default_ipv4.address is defined
+      with_items: "{{groups['all']}}"
+      become: true
+
+    - name: Set hostname
+      hostname: name="{{inventory_hostname}}"
+      become: true
+
+    - name: apt update
+      apt: update_cache=yes upgrade=dist
+      become: true
+
+    - name: Download git repository
+      become: true
+      git:
+        repo: 'https://github.com/adamorucu/de2_project.git'
+        dest: /star_pred
+
+    - name: Change ownership of directory
+      become: true
+      file:
+        path: /project
+        state: directory
+        recurse: yes
+        owner: appuser
+        group: appuser
+
+- hosts: slaveserver
+
+  vars_files:
+    - setup_vars.yml
+
+  tasks:
+    - name: Extra packages
+      apt: pkg=python3-pip state=latest update_cache=true
+      become: true
+
+    - name: Install pip packages
+      become: true
+      pip:
+        name: numpy, future, matplotlib, scikit-learn, ray, ray[default], ray[tune], pickle5
+
+    - name: Connect to ray head
+      command: ray start --address='192.168.2.30:6379' --redis-password='5241590000000000'
+      become: true
