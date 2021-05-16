@@ -101,4 +101,4 @@
     - name: Install pip packages
       become: true
       pip:
-        name: numpy, future, matplotlib, scikit-learn, ray, ray[default], ray[tune], pickle5
+        name: numpy, future, matplotlib, pandas, scikit-learn, notebook, ray, ray[default], ray[tune], tune-sklearn, pickle5
