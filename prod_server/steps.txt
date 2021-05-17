@@ -1,0 +1,7 @@
+ssh development
+ssh-keygen
+copy key to prodserver > authoresize_keys
+create git hook
+chmod +x hooks/post-receive
+# in dev /star_predict
+git remote add production appuser@192.168.2.148:/home/appuser/star_predict

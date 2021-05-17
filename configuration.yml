@@ -21,12 +21,12 @@
       become: true
       git:
         repo: 'https://github.com/adamorucu/de2_project.git'
-        dest: /star_pred
+        dest: /project
 
     - name: Change ownership of directory
       become: true
       file:
-        path: /project
+        path: /star_predict
         state: directory
         recurse: yes
         owner: appuser
@@ -76,17 +76,23 @@
         dest: /usr/local/bin/docker-compose
         mode: +x
 
+    - name: Init git bare
+      become: true
+      shell: git init --bare
+      args:
+        chdir: /star_predict
+
     - name: Build containers
       become: true
       shell: docker build .
       args:
-        chdir: /star_pred/prod_server
+        chdir: /project/prod_server
 
     - name: Running containers
       become: true
       shell: docker-compose up -d
       args:
-        chdir: /star_pred/prod_server
+        chdir: /project/prod_server
 
 - hosts: devserver
 
@@ -102,3 +108,10 @@
       become: true
       pip:
         name: numpy, future, matplotlib, pandas, scikit-learn, ray, ray[tune], ray[default], tune-sklearn==0.2.1, pickle5, ray[tune], ray[default], notebook, requests
+
+    - name: Download git repository
+      git:
+        repo: 'https://github.com/adamorucu/star_predict.git'
+        dest: /star_predict
+      become: yes
+      become_user: appuser
