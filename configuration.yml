@@ -26,7 +26,7 @@
     - name: Change ownership of directory
       become: true
       file:
-        path: /star_predict
+        path: /home/appuser/star_predict
         state: directory
         recurse: yes
         owner: appuser
@@ -76,12 +76,6 @@
         dest: /usr/local/bin/docker-compose
         mode: +x
 
-    - name: Init git bare
-      become: true
-      shell: git init --bare
-      args:
-        chdir: /star_predict
-
     - name: Build containers
       become: true
       shell: docker build .
@@ -112,6 +106,6 @@
     - name: Download git repository
       git:
         repo: 'https://github.com/adamorucu/star_predict.git'
-        dest: /star_predict
+        dest: /home/appuser/star_predict
       become: yes
       become_user: appuser
