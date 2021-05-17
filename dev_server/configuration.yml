@@ -45,8 +45,4 @@
     - name: Install pip packages
       become: true
       pip:
-        name: numpy, future, matplotlib, pandas, scikit-learn, ray, ray[tune], ray[default], tune-sklearn==0.2.1, pickle5
-
-    - name: Connect to ray head
-      command: ray start --address='192.168.2.30:6379' --redis-password='5241590000000000'
-
+        name: numpy, future, matplotlib, pandas, scikit-learn, ray, ray[tune], ray[default], tune-sklearn==0.2.1, pickle5, ray[tune]
