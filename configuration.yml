@@ -102,10 +102,3 @@
       become: true
       pip:
         name: numpy, future, matplotlib, pandas, scikit-learn, ray, ray[tune], ray[default], tune-sklearn==0.2.1, pickle5, ray[tune], ray[default], notebook, requests
-
-    - name: Download git repository
-      git:
-        repo: 'https://github.com/adamorucu/star_predict.git'
-        dest: /home/appuser/star_predict
-      become: yes
-      become_user: appuser
