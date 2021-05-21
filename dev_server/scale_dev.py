@@ -1,3 +1,5 @@
+# Script that will creat instances just like start-instances. (maybe with ability to specify number of sslaves)
+# You should also input the IP and port for ray
 import time, os, sys,  random, re
 import inspect
 from os import environ as env
@@ -39,23 +41,16 @@ if private_net != None:
 else:
     sys.exit("private-net not defined")
 
-cfg_file_path = os.getcwd() + '/prod-cfg.txt'
+cfg_file_path = os.getcwd() + '/slave-cfg.txt'
 if os.path.isfile(cfg_file_path):
     userdata_prod = open(cfg_file_path)
 else:
-    sts.exit("prod-cfg.txt is not in current working directory")
-
-
-cfg_file_path = os.getcwd() + '/dev-cfg.txt'
-if os.path.isfile(cfg_file_path):
-    userdata_dev = open(cfg_file_path)
-else:
-    sys.exit("dev-cfg.txt is not in current working directory")
+    sts.exit("slave-cfg.txt is not in current working directory")
 
 secgroups = ['default']
 
 print('Creating instances ...')
-instance_prod = nova.servers.create(name="team16_prod"+str(identifier),
+instance_slave = nova.servers.create(name="team16_slave"+str(identifier),
                                     image=image,
                                     flavor=flavor,
                                     key_name=key,
@@ -63,44 +58,23 @@ instance_prod = nova.servers.create(name="team16_prod"+str(identifier),
                                     nics=nics,
                                     security_groups=secgroups)
 
-instance_dev = nova.servers.create(name="team16_dev"+str(identifier),
-                                    image=image,
-                                    flavor=flavor,
-                                    key_name=key,
-                                    userdata=userdata_dev,
-                                    nics=nics,
-                                    security_groups=secgroups)
-
-inst_status_prod = instance_prod.status
-inst_status_dev = instance_dev.status
+inst_status_slave = instance_slave.status
 
 print("waiting for 10 secs..")
 time.sleep(10)
 
-while inst_status_prod == 'BUILD' or inst_status_dev == 'BUILD':
-    print(f'Instance: {instance_prod.name} is in {inst_status_prod} state, sleeping for 5 secs more')
-    print(f'Instance: {instance_dev.name} is in {inst_status_dev} state, sleeping for 5 secs more')
+while inst_status_slave == 'BUILD':
+    print(f'Instance: {instance_slave.name} is in {inst_status_slave} state, sleeping for 5 secs more')
     time.sleep(5)
-    instance_prod = nova.servers.get(instance_prod.id)
-    inst_status_prod = instance_prod.status
-    instance_dev = nova.servers.get(instance_dev.id)
-    inst_status_dev = instance_dev.status
+    instance_slave = nova.servers.get(instance_slave.id)
+    inst_status_slave = instance_slave.status
 
-ip_address_prod = None
-for network in instance_prod.networks[private_net]:
+ip_address_slave = None
+for network in instance_slave.networks[private_net]:
     if re.match('\d+\.\d+\.\d+\.\d+', network):
-        ip_address_prod = network
+        ip_address_slave = network
         break
-if ip_address_prod is None:
+if ip_address_slave is None:
     raise RuntimeError('No IP address assigned')
 
-ip_address_dev = None
-for network in instance_dev.networks[private_net]:
-    if re.match('\d+\.\d+\.\d+\.\d+', network):
-        ip_address_dev = network
-        break
-if ip_address_dev is None:
-    raise RuntimeError('No IP address assigned')
-
-print(f'Instance: {instance_prod.name} is in {inst_status_prod} state ip address {ip_address_prod}')
-print(f'Instance: {instance_dev.name} is in {inst_status_dev} state ip address {ip_address_dev}')
+print(f'Instance: {instance_slave.name} is in {inst_status_slave} state ip address {ip_address_slave}')
