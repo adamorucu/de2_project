@@ -6,7 +6,7 @@ from time import sleep
 from github import Github as GitHub, RateLimitExceededException
 
 def fetch():
-    GITHUB_TOKEN = "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"
+    GITHUB_TOKEN = "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"
     api = GitHub(GITHUB_TOKEN)
     q = "stars:50..1000000"  # The topmost currently has less than 400 000 
     result = api.search_repositories(q, sort="stars", order="desc")
@@ -68,6 +68,7 @@ def repo_to_dict(r, with_urls):
         "ssh_url": r.ssh_url,
         "stargazers_url": r.stargazers_url,
         "statuses_url": r.statuses_url,
+        "subscribers_count": r.subscribers_count,
         "subscribers_url": r.subscribers_url,
         "subscription_url": r.subscription_url,
         "svn_url": r.svn_url,
@@ -76,8 +77,6 @@ def repo_to_dict(r, with_urls):
         "trees_url": r.trees_url,
         "updated_at": str(r.updated_at),
         "url_url": r.url,
-        "watchers": r.watchers,
-        "watchers_count": r.watchers_count,
     }
     
     if with_urls:
