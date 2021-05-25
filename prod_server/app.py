@@ -18,27 +18,10 @@ def index():
 @app.route("/test", methods=['POST', 'GET'])
 def accuracy():
     if request.method == 'POST':
-        r = add.delay()
+        r = add_nums.delay()
         a = r.get()
         return '<h1>Addition result {}</h1>'.format(a)
 
-    return '''<form method="POST">
-    <input type="submit">
-    </form>'''
-
-@app.route("/predictions", methods=['POST', 'GET'])
-def predictions():
-    if request.method == 'POST':
-        results = get_predictions.delay()
-        predictions = results.get()
-
-        results = get_accuracy.delay()
-        accuracy = results.get()
-        
-        final_results = predictions
-
-        return render_template('result.html', accuracy=accuracy ,final_results=final_results) 
-                    
     return '''<form method="POST">
     <input type="submit">
     </form>'''
