@@ -26,7 +26,7 @@
     - name: Change ownership of directory
       become: true
       file:
-        path: /home/appuser/star_predict
+        path: /project
         state: directory
         recurse: yes
         owner: appuser
