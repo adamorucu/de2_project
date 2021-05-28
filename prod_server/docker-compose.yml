@@ -1,16 +1,17 @@
-version: "3"
+version: "3.4"
 services:
   web:
     build:
       context: .
       dockerfile: Dockerfile
+      network: host
     restart: always
     ports:
       - "5100:5100"
     depends_on:
       - rabbit
     volumes:
-      - .:/app
+      - .:/star_predict
   rabbit:
     hostname: rabbit
     image: rabbitmq:management
@@ -23,11 +24,12 @@ services:
   worker_1:
     build:
       context: .
+      network: host
     hostname: worker_1
     entrypoint: celery
     command: -A worker worker --loglevel=debug
     volumes:
-      - .:/app
+      - .:/star_predict
     links:
       - rabbit
     depends_on:

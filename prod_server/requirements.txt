@@ -6,3 +6,6 @@ scikit-learn
 future
 pickle5
 matplotlib
+ray
+tune-sklearn
+ray[tune]

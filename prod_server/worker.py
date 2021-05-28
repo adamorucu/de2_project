@@ -1,5 +1,5 @@
 from celery import Celery
-
+import pickle
 from numpy import loadtxt
 import numpy as np
 
@@ -13,4 +13,10 @@ celery = Celery('worker', broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEN
 def add_nums():
     a= 2
     b = 3
-   return a + b
+    rf_model = pickle.load(open('./best_model.sav', 'rb'))
+    return ("Test")
+
+@celery.task()
+def get_prediction(year, forks, has_downloads, has_issues, has_wiki, open_issues_count, size, subscribers_count):
+    rf_model = pickle.load(open('./best_model.sav', 'rb'))
+    return ( rf_model.predict([[year, forks, has_downloads, has_issues, has_wiki, open_issues_count, size, subscribers_count]])[0] )
