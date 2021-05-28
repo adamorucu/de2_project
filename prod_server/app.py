@@ -1,4 +1,4 @@
-from worker import add_nums, get_accuracy, get_predictions
+from worker import add_nums
 
 from flask import (
    Flask,
