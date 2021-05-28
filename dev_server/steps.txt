@@ -8,4 +8,5 @@ python3 scale_dev.py
 sudo vim /etc/ansible/hosts
 # make the changes
 # ssh -i ~/keys/key appuser@192.168.2.195
-ansible-playbook configuration.yml --private-key=/home/ubuntu/keys/key
+# inside dev_server do the following
+ansible-playbook configuration.yml --private-key=/home/ubuntu/keys/key -l slaveserver
