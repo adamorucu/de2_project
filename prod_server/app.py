@@ -1,3 +1,6 @@
+"""
+Web server that gives users ability to get predictions
+"""
 from worker import add_nums, get_prediction
 from sklearn.ensemble import RandomForestRegressor
 from flask import (
@@ -7,6 +10,7 @@ from flask import (
    Markup,
    render_template 
 )
+from subprocess import call
 
 #app = Flask(__name__, template_folder='./templates',static_folder='./static')
 app = Flask(__name__)
@@ -14,6 +18,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return '<h1>Welcome to the Machine Learning Course.</h1>'
+
 
 @app.route("/test", methods=['POST', 'GET'])
 def accuracy():

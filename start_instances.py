@@ -1,3 +1,6 @@
+"""
+This script starts instances for the development and production servers
+"""
 import time, os, sys,  random, re
 import inspect
 from os import environ as env

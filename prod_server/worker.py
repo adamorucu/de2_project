@@ -1,3 +1,6 @@
+"""
+Celery worker that works on the tasks in the queue
+"""
 from celery import Celery
 import pickle
 from numpy import loadtxt
@@ -20,3 +23,11 @@ def add_nums():
 def get_prediction(year, forks, has_downloads, has_issues, has_wiki, open_issues_count, size, subscribers_count):
     rf_model = pickle.load(open('./best_model.sav', 'rb'))
     return ( rf_model.predict([[year, forks, has_downloads, has_issues, has_wiki, open_issues_count, size, subscribers_count]])[0] )
+
+@celery.task()
+def get_prediction_scale(year, forks, has_downloads, has_issues, has_wiki, open_issues_count, size, subscribers_count):
+    rf_model = pickle.load(open('./best_model.sav', 'rb'))
+    for i in range(100):
+        rf_model.predict([[year, forks, has_downloads, has_issues, has_wiki, open_issues_count, size, subscribers_count]])[0]
+    return ( rf_model.predict([[year, forks, has_downloads, has_issues, has_wiki, open_issues_count, size, subscribers_count]])[0] )
+

@@ -1,3 +1,4 @@
+# steps needed to start a ray cluster
 ssh -i ~/keys/key appuser@192.168.2.30
 ray start --head
 # copy output

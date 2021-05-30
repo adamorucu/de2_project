@@ -1,3 +1,6 @@
+"""
+Used to fetch metadata from Github
+"""
 import argparse
 import json
 import sys
